@@ -1,5 +1,6 @@
 import { User } from "../models/user.js";
 import bcrypt, { hash } from "bcrypt";
+import crypto from "crypto";
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -33,9 +34,7 @@ const register = async (req, res) => {
   try {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res
-        .status(httpStatus.FOUND)
-        .json({ message: "User already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
@@ -44,7 +43,7 @@ const register = async (req, res) => {
       password: hashedPassword,
     });
     await newUser.save();
-    res.status(httpStatus.CREATED).json({ message: "User registered" });
+    res.status(200).json({ message: "User registered" });
   } catch (err) {
     res.json({ message: `Something went wrong ${err}` });
   }
