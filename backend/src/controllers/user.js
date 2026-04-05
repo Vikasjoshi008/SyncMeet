@@ -18,11 +18,11 @@ const login = async (req, res) => {
     if (bcrypt.compare(password, user.password)) {
       let token = crypto.randomBytes(20).toString("hex");
       user.token = token;
-      await user.save();
       return res
         .status(200)
         .json({ message: "logged in successfully" }, { token: token });
     }
+    await user.save();
   } catch (err) {
     return res.status(500).json({ message: `Something went wrong ${err}` });
   }
