@@ -1,6 +1,6 @@
-import { User } from "../models/user.js";
-import bcrypt, { hash } from "bcrypt";
-import crypto from "crypto";
+const { User } = require("../models/user.js");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const login = async (req, res) => {
   const { username, password } = req.body;

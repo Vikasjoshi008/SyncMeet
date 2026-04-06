@@ -4,7 +4,7 @@
   "description": "",
   "license": "ISC",
   "author": "Vikas joshi",
-  "type": "module",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/app.js",
