@@ -49,4 +49,4 @@ const register = async (req, res) => {
   }
 };
 
-export { login, register };
+module.exports = { login, register };
