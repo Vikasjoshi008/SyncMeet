@@ -1,12 +1,12 @@
-const express = require("express");
-const dotenv = require("dotenv");
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
-const { createServer } = require("http");
-const { Server } = require("socket.io");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const { connectToSocket } = require("./controllers/socketManager.js");
-const userRoutes = require("./routes/userRoutes.js");
+import { createServer } from "http";
+import { Server } from "socket.io";
+import mongoose from "mongoose";
+import cors from "cors";
+import { connectToSocket } from "./controllers/socketManager.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 const server = createServer(app);
