@@ -1,9 +1,12 @@
 import React from "react";
+import "../App.css";
 
 export default function LandingPage() {
   return (
     <>
-      <h1>Landing page</h1>
+      <div className="landingPageContainer">
+        <h1>Landing page</h1>
+      </div>
     </>
   );
 }
