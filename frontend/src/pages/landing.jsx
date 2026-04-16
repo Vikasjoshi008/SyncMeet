@@ -1,11 +1,22 @@
 import React from "react";
-import "../App.css";
+import "../styles/landing.css";
 
 export default function LandingPage() {
   return (
     <>
       <div className="landingPageContainer">
-        <h1>Landing page</h1>
+        <nav>
+          <div className="navHeader">
+            <h2>SyncMeet</h2>
+          </div>
+          <div className="navlist">
+            <p>Join as Guest</p>
+            <p>Register</p>
+            <div role="button">
+              <p>Login</p>
+            </div>
+          </div>
+        </nav>
       </div>
     </>
   );

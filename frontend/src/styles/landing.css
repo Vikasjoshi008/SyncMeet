@@ -1,0 +1,94 @@
+/* .landingPageContainer {
+  width: 100vw;
+  height: 100vh;
+  background: url("../../public/background2.png");
+  background-size: cover;
+  color: white;
+}
+
+.landingPageContainer nav {
+  padding-inline: 1.2rem;
+  padding-block: 1.6rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.landingPageContainer nav h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.landingPageContainer nav .navlist {
+  display: flex;
+  gap: 1.6rem;
+} */
+
+.landingPageContainer {
+  width: 100vw;
+  height: 100vh;
+  background: url("../../public/background2.png");
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+/* NAVBAR CONTAINER */
+.landingPageContainer nav {
+  padding-inline: 1.2rem;
+  padding-block: 1.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 20px;
+  /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+/* LOGO */
+.landingPageContainer nav h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+/* NAV ITEMS */
+.landingPageContainer nav .navlist {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+/* TEXT LINKS */
+.landingPageContainer nav .navlist p {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.85;
+}
+
+.landingPageContainer nav .navlist p:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* LOGIN BUTTON */
+.landingPageContainer nav .navlist div {
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.landingPageContainer nav .navlist div:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
