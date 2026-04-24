@@ -27,7 +27,7 @@ export default function LandingPage() {
             </h1>
             <p>cover a distance by SyncMeet</p>
             <div role="button">
-              <Link to={"/home"}>Get started</Link>
+              <Link to={"/auth"}>Get started</Link>
             </div>
           </div>
           <div>
