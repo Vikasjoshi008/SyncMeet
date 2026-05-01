@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -8,8 +8,11 @@ import {
   Typography,
   Stack,
   Card,
+  Snackbar,
 } from "@mui/material";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import { AuthContext } from "../context/AuthContext";
+import { red } from "@mui/material/colors";
 
 export default function Authentication() {
   const [username, setUsername] = useState("");
@@ -19,6 +22,24 @@ export default function Authentication() {
   const [messages, setMessages] = useState("");
   const [formState, setFormState] = useState(0);
   const [open, setOpen] = useState(false);
+
+  const { handleRegister, handleLogin } = useContext(AuthContext);
+
+  let handleAuth = async () => {
+    try {
+      if (formState === 0) {
+      }
+      if (formState === 1) {
+        let result = await handleRegister(name, username, password);
+        console.log(result);
+        setMessages(result);
+        setOpen(true);
+      }
+    } catch (err) {
+      let message = err.response.data.message;
+      setError(message);
+    }
+  };
 
   return (
     <div>
@@ -91,7 +112,7 @@ export default function Authentication() {
               variant="outlined"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <FormControlLabel control={<Checkbox />} label="Remember me" />
+            <p style={{ color: red }}>{error}</p>
             {formState === 0 && (
               <Button
                 fullWidth
@@ -118,6 +139,7 @@ export default function Authentication() {
           </Card>
         </Stack>
       </Box>
+      <Snackbar open={open} autoHideDuration={4000} message={messages} />
     </div>
   );
 }

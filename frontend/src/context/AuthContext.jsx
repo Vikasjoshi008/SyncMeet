@@ -1,11 +1,55 @@
-import React from "react";
+import { Children, createContext, useContext, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-function authContext() {
-  return (
-    <div>
-      <h1>Auth context</h1>
-    </div>
-  );
-}
+export const AuthContext = createContext({});
 
-export default authContext;
+const client = axios.create({
+  baseURL: "http://localhost:8000/api/v1/users",
+});
+
+export const AuthProvider = ({ children }) => {
+  const authContext = useContext(AuthContext);
+
+  const [userData, setUserData] = useState(authContext);
+
+  const handleRegister = async (name, username, password) => {
+    try {
+      let request = await client.post("/register", {
+        name: name,
+        username: username,
+        password: password,
+      });
+
+      if (request.status === 200) {
+        return request.data.message;
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const handleLogin = async (username, password) => {
+    try {
+      let request = await client.post("/login", {
+        username: username,
+        password: password,
+      });
+
+      if (request.status === 200) {
+        localStorage.setItem("token", request.data.token);
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const router = useNavigate();
+  const data = {
+    userData,
+    setUserData,
+    handleRegister,
+  };
+
+  return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;
+};

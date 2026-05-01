@@ -14,7 +14,12 @@ export default function LandingPage() {
             <p>Join as Guest</p>
             <p>Register</p>
             <div role="button">
-              <p>Login</p>
+              <Link
+                style={{ textDecoration: "none", color: "white" }}
+                to={"/auth"}
+              >
+                <p>Login</p>
+              </Link>
             </div>
           </div>
         </nav>
