@@ -13,6 +13,7 @@ import {
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { AuthContext } from "../context/AuthContext";
 import { red } from "@mui/material/colors";
+import { useGoogleLogin } from "@react-oauth/google";
 
 export default function Authentication() {
   const [username, setUsername] = useState("");
@@ -40,6 +41,22 @@ export default function Authentication() {
       setError(message);
     }
   };
+
+  const responseGoogle = async (response) => {
+    try {
+      if (response["code"]) {
+      }
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: responseGoogle,
+    onError: responseGoogle,
+    flow: "auth-code",
+  });
 
   return (
     <div>
@@ -114,27 +131,35 @@ export default function Authentication() {
             />
             <p style={{ color: red }}>{error}</p>
             {formState === 0 && (
-              <Button
-                fullWidth
-                variant={formState === 0 ? "contained" : ""}
-                onClick={() => setFormState(0)}
-                size="large"
-                sx={{ mt: 2 }}
-              >
-                Sign In
-              </Button>
+              <>
+                <Button
+                  fullWidth
+                  variant={formState === 0 ? "contained" : ""}
+                  onClick={() => setFormState(0)}
+                  size="large"
+                  sx={{ mt: 2 }}
+                >
+                  Sign In
+                </Button>
+
+                <Button onClick={googleLogin}>Login with google</Button>
+              </>
             )}
 
             {formState === 1 && (
-              <Button
-                fullWidth
-                variant={formState === 1 ? "contained" : ""}
-                onClick={() => setFormState(1)}
-                size="large"
-                sx={{ mt: 2 }}
-              >
-                Sign Up
-              </Button>
+              <>
+                <Button
+                  fullWidth
+                  variant={formState === 1 ? "contained" : ""}
+                  onClick={() => setFormState(1)}
+                  size="large"
+                  sx={{ mt: 2 }}
+                >
+                  Sign Up
+                </Button>
+
+                <Button onClick={googleLogin}>Login with google</Button>
+              </>
             )}
           </Card>
         </Stack>

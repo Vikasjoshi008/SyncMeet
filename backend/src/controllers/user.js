@@ -49,4 +49,6 @@ const register = async (req, res) => {
   }
 };
 
-export { login, register };
+const googleLogin = async (req, res) => {};
+
+export { login, register, googleLogin };
