@@ -1,6 +1,8 @@
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import axios from "axios";
+import jwt from "jsonwebtoken";
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -49,6 +51,37 @@ const register = async (req, res) => {
   }
 };
 
-const googleLogin = async (req, res) => {};
+const googleLogin = async (req, res) => {
+  try {
+    const { code } = req.query;
+    const googleRes = await oauth2client.getToken(code);
+    oauth2client.setCredentials(googleRes.tokens);
+
+    const userRes = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`,
+    );
+    const { email, name, picture } = userRes.data;
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User.create({
+        name,
+        email,
+        image: picture,
+      });
+    }
+    const { _id } = user;
+    const token = jwt.sign({ _id, email }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    return res.status(200).json({
+      message: "Success",
+      token,
+      user,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: `Internal server error ${err}` });
+  }
+};
 
 export { login, register, googleLogin };
