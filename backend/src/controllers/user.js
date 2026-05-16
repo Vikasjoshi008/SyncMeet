@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
+import { oauth2Client } from "../utils/googleClient.js";
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -51,37 +54,45 @@ const register = async (req, res) => {
   }
 };
 
-const googleLogin = async (req, res) => {
+export const googleLogin = async (req, res) => {
   try {
     const { code } = req.query;
-    const googleRes = await oauth2client.getToken(code);
-    oauth2client.setCredentials(googleRes.tokens);
+    console.log("1. Code received from frontend:", code);
 
-    const userRes = await axios.get(
-      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`,
-    );
-    const { email, name, picture } = userRes.data;
-
-    let user = await User.findOne({ email });
-    if (!user) {
-      user = new User.create({
-        name,
-        email,
-        image: picture,
-      });
+    if (!code) {
+      return res.status(400).json({ message: "Code parameter is missing" });
     }
-    const { _id } = user;
-    const token = jwt.sign({ _id, email }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
+
+    // 2. Exchange code for tokens
+    console.log(
+      "2. Exchanging code with Google using client ID:",
+      process.env.GOOGLE_CLIENT_ID,
+    );
+    const { tokens } = await oauth2Client.getToken(code);
+
+    console.log("3. Tokens successfully received from Google!");
+    oauth2Client.setCredentials(tokens);
+
+    // 3. Get user info
+    const googleUserResponse = await fetch(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`,
+    );
+    const googleUser = await googleUserResponse.json();
+    console.log("4. Google user profile parsed:", googleUser.email);
+
+    // ... your remaining database saving logic ...
+    return res.status(200).json({ message: "Success", user: googleUser });
+  } catch (error) {
+    // CRITICAL: This will print the EXACT error message in your terminal window
+    console.error("================ BACKEND ERROR ================");
+    console.error(error);
+    console.error("===============================================");
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+      errorDetails: error.message,
     });
-    return res.status(200).json({
-      message: "Success",
-      token,
-      user,
-    });
-  } catch (err) {
-    return res.status(500).json({ message: `Internal server error ${err}` });
   }
 };
 
-export { login, register, googleLogin };
+export { login, register };

@@ -14,6 +14,8 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import { AuthContext } from "../context/AuthContext";
 import { red } from "@mui/material/colors";
 import { useGoogleLogin } from "@react-oauth/google";
+import { signInWithGoogle } from "../api.js";
+import { useNavigate } from "react-router";
 
 export default function Authentication() {
   const [username, setUsername] = useState("");
@@ -25,6 +27,7 @@ export default function Authentication() {
   const [open, setOpen] = useState(false);
 
   const { handleRegister, handleLogin } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   let handleAuth = async () => {
     try {
@@ -45,8 +48,16 @@ export default function Authentication() {
   const responseGoogle = async (response) => {
     try {
       if (response["code"]) {
+        const result = await signInWithGoogle(response.code);
+        const { email, name, image } = result.data.user;
+        const token = result.data.token;
+        const obj = { email, name, image, token };
+        localStorage.setItem("user-info", JSON.stringify(obj));
+        navigate("/dashboard");
+        console.log("Logged in user:", result.data.user);
+      } else {
+        console.error("Unexpected response structure:", result);
       }
-      console.log(response);
     } catch (err) {
       console.log(err);
     }

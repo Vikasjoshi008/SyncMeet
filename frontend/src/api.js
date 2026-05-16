@@ -5,5 +5,5 @@ const api = axios.create({
 });
 
 export const signInWithGoogle = async (code) => {
-  api.get(`/google?code=${code}`);
+  return api.get(`/google?code=${code}`);
 };
