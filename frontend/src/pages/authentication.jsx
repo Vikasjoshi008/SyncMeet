@@ -16,6 +16,7 @@ import { red } from "@mui/material/colors";
 import { useGoogleLogin } from "@react-oauth/google";
 import { signInWithGoogle } from "../api.js";
 import { useNavigate } from "react-router";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function Authentication() {
   const [username, setUsername] = useState("");
@@ -25,6 +26,7 @@ export default function Authentication() {
   const [messages, setMessages] = useState("");
   const [formState, setFormState] = useState(0);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { handleRegister, handleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -48,10 +50,11 @@ export default function Authentication() {
   const responseGoogle = async (response) => {
     try {
       if (response["code"]) {
+        setLoading(true);
         const result = await signInWithGoogle(response.code);
-        const { email, name, image } = result.data.user;
+        const { username, name, image } = result.data.user;
         const token = result.data.token;
-        const obj = { email, name, image, token };
+        const obj = { username, name, image, token };
         localStorage.setItem("user-info", JSON.stringify(obj));
         navigate("/dashboard");
         console.log("Logged in user:", result.data.user);
@@ -60,6 +63,8 @@ export default function Authentication() {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -171,6 +176,11 @@ export default function Authentication() {
 
                 <Button onClick={googleLogin}>Login with google</Button>
               </>
+            )}
+            {loading && (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress aria-label="Loading…" />
+              </Box>
             )}
           </Card>
         </Stack>

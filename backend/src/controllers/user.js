@@ -63,30 +63,51 @@ export const googleLogin = async (req, res) => {
       return res.status(400).json({ message: "Code parameter is missing" });
     }
 
-    // 2. Exchange code for tokens
-    console.log(
-      "2. Exchanging code with Google using client ID:",
-      process.env.GOOGLE_CLIENT_ID,
-    );
     const { tokens } = await oauth2Client.getToken(code);
-
-    console.log("3. Tokens successfully received from Google!");
     oauth2Client.setCredentials(tokens);
 
-    // 3. Get user info
     const googleUserResponse = await fetch(
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`,
     );
     const googleUser = await googleUserResponse.json();
     console.log("4. Google user profile parsed:", googleUser.email);
 
-    // ... your remaining database saving logic ...
-    return res.status(200).json({ message: "Success", user: googleUser });
+    let user = await User.findOne({ username: googleUser.email });
+
+    if (!user) {
+      console.log("5. New user! Saving to database...");
+      user = new User({
+        name: googleUser.name,
+        username: googleUser.email,
+        password: Math.random().toString(36).slice(-8),
+        image: googleUser.picture,
+      });
+      await user.save();
+    } else {
+      console.log("5. Existing user found in database.");
+    }
+
+    const appToken = jwt.sign(
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    user.token = appToken;
+    await user.save();
+
+    return res.status(200).json({
+      message: "Success",
+      token: appToken,
+      user: {
+        id: user._id,
+        name: user.name,
+        username: user.username,
+        image: user.image,
+      },
+    });
   } catch (error) {
-    // CRITICAL: This will print the EXACT error message in your terminal window
-    console.error("================ BACKEND ERROR ================");
     console.error(error);
-    console.error("===============================================");
 
     return res.status(500).json({
       message: "Internal Server Error",

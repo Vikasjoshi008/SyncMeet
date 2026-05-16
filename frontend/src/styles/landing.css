@@ -23,6 +23,8 @@
   gap: 1.6rem;
 } */
 
+@import "tailwindcss";
+
 .landingPageContainer {
   width: 100vw;
   height: 100vh;
